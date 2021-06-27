@@ -1,5 +1,5 @@
 const index =
-  `<html><body><h1>Bro Deno</h1>This code is hosted by [GitHub repository](https://github.com/zored/deno_pro).</body></html>`;
+  `<html><body><h1>Bro Deno</h1>This code is hosted by <a href="https://github.com/zored/deno_pro">GitHub repository</a>.</body></html>`;
 addEventListener("fetch", (event: FetchEvent) =>
   event.respondWith(
     new Response(index, {
