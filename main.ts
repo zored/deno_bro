@@ -37,5 +37,5 @@ const handlers: Record<string, Record<string, (e: FetchEvent) => Response>> = {
 addEventListener("fetch", (event: FetchEvent) => {
   const getResponse = handlers?.[event.request.method]?.[event.request.url] ??
     handlers.GET[notFound];
-  event.respondWith(getResponse(e));
+  event.respondWith(getResponse(event));
 });
