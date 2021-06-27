@@ -1,7 +1,6 @@
 # Deno Bro
 
-This is my [bro](https://bro.deno.dev) repository containing
-[`main.ts`](./main.ts) that is hosted on [Deno Deploy](https://deno.com/deploy).
+This is my [bro](https://bro.deno.dev) repository containing [`main.ts`](./main.ts) that is hosted on [Deno Deploy](https://deno.com/deploy).
 
 ## Dev
 
