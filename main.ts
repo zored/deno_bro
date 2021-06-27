@@ -1,5 +1,5 @@
 import { decode } from "https://deno.land/std@0.99.0/encoding/base64.ts";
-import { readAllSync } from "https://deno.land/std@0.99.0/io/util.ts";
+import { readAll } from "https://deno.land/std@0.99.0/io/util.ts";
 
 type Handler = Response | ((s: Server) => Response | Promise<Response>);
 type HandlersByMethodAndPath = Record<string, Record<string, Handler>>;
@@ -52,11 +52,11 @@ addEventListener("fetch", async (event: FetchEvent) => {
 });
 
 class Server {
-  constructor(public req: Request, private textDecoder = new TextDecoder()) {
+  constructor(public req: Request, private toStringDecoder = new TextDecoder()) {
   }
 
   async getRequestTextBody(): Promise<string> {
-    return this.textDecoder.decode(await Deno.readAll(this.req.body));
+    return this.toString(await readAll(this.req.body));
   }
 
   async htmlResponse(body: string) {
@@ -76,5 +76,9 @@ class Server {
 
   getPath() {
     return (new URL(this.req.url)).pathname;
+  }
+
+  private toString(v: BufferSource): string {
+    return this.toStringDecoder.decode(v);
   }
 }
