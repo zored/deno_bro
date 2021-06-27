@@ -24,8 +24,6 @@ const handlers: HandlersByMethodAndPath = {
         </pre></code>
       `);
     })(),
-    "/upper": async (s) =>
-      s.textResponse((await s.getRequestTextBody()).toUpperCase()),
     "/favicon.ico": (s) =>
       s.response({
         body: decode(
@@ -34,6 +32,10 @@ const handlers: HandlersByMethodAndPath = {
         mime: "image/x-icon",
       }),
   },
+  POST: {
+    "/upper": async (s) =>
+      s.textResponse((await s.getRequestTextBody()).toUpperCase()),
+  }
 };
 
 addEventListener("fetch", async (event: FetchEvent) => {
