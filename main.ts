@@ -1,7 +1,7 @@
 import { decode } from "https://deno.land/std@0.99.0/encoding/base64.ts";
 
 const notFound = "/404";
-const handlers: Record<string, Record<string, (e: FetchEvent) => Response>> = {
+const handlers: Record<string, Record<string, (e: FetchEvent, u: Url) => Response>> = {
   GET: {
     "/": (() => {
       const deployedAt = new Date();
@@ -26,8 +26,8 @@ const handlers: Record<string, Record<string, (e: FetchEvent) => Response>> = {
           headers: { "content-type": "image/x-icon" },
         },
       ),
-    [notFound]: (e: FetchEvent) =>
-      new Response(`${e.request.method} ${e.request.url}\n404 not found`, {
+    [notFound]: (e: FetchEvent, u: URL) =>
+      new Response(`not found`, {
         status: 404,
         headers: { "content-type": "text/plain" },
       }),
@@ -35,7 +35,9 @@ const handlers: Record<string, Record<string, (e: FetchEvent) => Response>> = {
 };
 
 addEventListener("fetch", (event: FetchEvent) => {
-  const getResponse = handlers?.[event.request.method]?.[event.request.url] ??
+  const url = new URL(event.request.url);
+  const path = url.pathname;
+  const getResponse = handlers?.[event.request.method]?.[path] ??
     handlers.GET[notFound];
-  event.respondWith(getResponse(event));
+  event.respondWith(getResponse(event, url));
 });
