@@ -12,7 +12,9 @@ const handlers: HandlersByMethodAndPath = {
       let visits = 0;
 
       return (s) =>
-        s.htmlResponse(`
+        s.isJsonRequest()
+          ? s.jsonResponse({ deployedAt, visits })
+          : s.htmlResponse(`
         <h1>Bro Deno</h1>
         <p>
           This code is hosted by <a href="https://github.com/zored/deno_bro">GitHub repository</a>.
@@ -51,6 +53,7 @@ addEventListener("fetch", async (event: FetchEvent) => {
 });
 
 class Server {
+  private static readonly jsonMime = "application/json";
   constructor(
     public req: Request,
     private toStringDecoder = new TextDecoder(),
@@ -58,13 +61,20 @@ class Server {
   }
 
   async getRequestTextBody(): Promise<string> {
-    return this.toString(await this.req.text());
+    return await this.req.text();
   }
 
   async htmlResponse(body: string) {
     return this.response({
       body: `<html><body>${body}</body></html>`,
       mime: "text/html",
+    });
+  }
+
+  async jsonResponse(o: object) {
+    return this.response({
+      body: JSON.stringify(o),
+      mime: Server.jsonMime,
     });
   }
 
@@ -82,5 +92,10 @@ class Server {
 
   private toString(v: BufferSource): string {
     return this.toStringDecoder.decode(v);
+  }
+
+  isJsonRequest(): boolean {
+    const contentType = this.req.headers.get("content-type") || "";
+    return contentType.includes(Server.jsonMime);
   }
 }
