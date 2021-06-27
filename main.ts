@@ -6,7 +6,7 @@ const index = () =>
 
 addEventListener("fetch", (event: FetchEvent) =>
   event.respondWith(
-    new Response(index, {
+    new Response(index(), {
       status: 200,
       headers: { "content-type": "text/html" },
     }),
