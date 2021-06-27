@@ -5,5 +5,6 @@ This is my [bro](https://bro.deno.dev) repository containing
 
 ## Dev
 
+- [Examples](https://deno.com/deploy/docs/example-post-request) by Deno.
 - Types are generated with `deployctl types >  deployctl.d.ts`.
 - `main.ts` is auto-synced with Github on push.
