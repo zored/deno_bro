@@ -27,6 +27,7 @@ const handlers: HandlersByHostByMethodAndPath = {
   },
   "bro.deno.dev": {
     GET: {
+      "/debug": (s) => s.jsonDebugRequest(),
       "/": ((): Handler => {
         const deployedAt = new Date();
         let visits = 0;
@@ -91,6 +92,10 @@ class Server {
       body: `<html><body>${body}</body></html>`,
       mime: "text/html",
     });
+  }
+
+  async jsonDebugRequest() {
+    return this.jsonResponse(this.req);
   }
 
   async jsonResponse(o: object) {

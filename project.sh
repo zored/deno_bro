@@ -7,7 +7,7 @@ case $1 in
   run) # Run project.
     deployctl run main.ts
     ;;
-  fmt)
+  fmt) # Format code
     deno fmt
     ;;
   *)
