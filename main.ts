@@ -8,6 +8,7 @@ type HandlersByHostByMethodAndPath = Record<
 
 const notFound: Handler = (s) => s.response({ body: `not found`, status: 404 });
 
+const anyMethod = "*";
 const handlers: HandlersByHostByMethodAndPath = {
   "bon.deno.dev": {
     GET: {
@@ -26,8 +27,10 @@ const handlers: HandlersByHostByMethodAndPath = {
     },
   },
   "bro.deno.dev": {
-    GET: {
+    [anyMethod]: {
       "/debug": (s) => s.jsonDebugRequest(),
+    },
+    GET: {
       "/": ((): Handler => {
         const deployedAt = new Date();
         let visits = 0;
@@ -65,7 +68,8 @@ addEventListener("fetch", async (event: FetchEvent) => {
   const s = new Server(event.request);
   const responseOrRetriever =
     handlers?.[s.getHost()]?.[event.request.method]?.[s.getPath()] ??
-      notFound;
+      handlers?.[s.getHost()]?.[anyMethod]?.[s.getPath()];
+  notFound;
   const responseOrLazy = responseOrRetriever instanceof Response
     ? responseOrRetriever
     : responseOrRetriever(s);
@@ -95,7 +99,14 @@ class Server {
   }
 
   async jsonDebugRequest() {
-    return this.jsonResponse(this.req);
+    const o = {
+      headers: {} as Record<string, string>,
+      body: this.getRequestTextBody(),
+      url: this.req.url,
+      method: this.req.method,
+    };
+    this.req.headers.forEach((v, k) => o.headers[k] = v);
+    return this.jsonResponse(o);
   }
 
   async jsonResponse(o: object) {
