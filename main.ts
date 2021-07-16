@@ -101,7 +101,7 @@ class Server {
   async jsonDebugRequest() {
     const o = {
       headers: {} as Record<string, string>,
-      body: this.getRequestTextBody(),
+      body: await this.getRequestTextBody(),
       url: this.req.url,
       method: this.req.method,
     };
