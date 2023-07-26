@@ -35,6 +35,17 @@ const handlers: HandlersByHostByMethodAndPath = {
         const deployedAt = new Date();
         let visits = 0;
 
+        // weekend logic
+        const weekendDate = new Date(2023, 5, 26);
+        const names = ["weekend", "day", "night", "sleep"];
+        const dayName = () =>
+          names[
+            Math.floor(
+              ((new Date()).getTime() - weekendDate.getTime()) / 1000 / 60 /
+                60 / 24,
+            ) % 4
+          ];
+
         return (s) =>
           s.isJsonRequest()
             ? s.jsonResponse({ deployedAt, visits })
@@ -47,6 +58,8 @@ const handlers: HandlersByHostByMethodAndPath = {
           Deployed at: ${deployedAt}
           Visits since deploy: ${visits++}
         </pre></code>
+        
+        <p>${dayName()}</p>
       `);
       })(),
       "/favicon.ico": (s) =>
