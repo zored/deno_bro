@@ -50,6 +50,15 @@ const handlers: HandlersByHostByMethodAndPath = {
           s.isJsonRequest()
             ? s.jsonResponse({ deployedAt, visits })
             : s.htmlResponse(`
+      <!doctype html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          <meta http-equiv="X-UA-Compatible" content="ie=edge">
+          <title>Bro Deno</title>
+      </head>
+      <body>
         <h1>Bro Deno</h1>
         <p>
           This code is hosted by <a href="https://github.com/zored/deno_bro" target="_blank">GitHub repository</a>.
@@ -60,6 +69,8 @@ const handlers: HandlersByHostByMethodAndPath = {
         </pre></code>
         
         <p>${dayName()}</p>
+      </body>
+      </html>
       `);
       })(),
       "/favicon.ico": (s) =>
