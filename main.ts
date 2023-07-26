@@ -37,7 +37,7 @@ const handlers: HandlersByHostByMethodAndPath = {
 
         // weekend logic
         const weekendDate = new Date(2023, 6, 26);
-        const names = ["weekend", "day", "night", "sleep"];
+        const names = ["выходной", "день", "ночь", "отсыпной"];
         const dayName = () =>
           names[
             Math.floor(
