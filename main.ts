@@ -9,6 +9,19 @@ type HandlersByHostByMethodAndPath = Record<
 const notFound: Handler = (s) => s.response({ body: `not found`, status: 404 });
 
 const anyMethod = "*";
+
+const momDayName = (() => {
+  const weekendDate = new Date(2023, 6, 26);
+  const names = ["выходной", "день", "ночь", "отсыпной"];
+  return () =>
+      names[
+      Math.floor(
+          ((new Date()).getTime() - weekendDate.getTime()) / 1000 / 60 /
+          60 / 24,
+      ) % 4
+          ];
+})()
+
 const handlers: HandlersByHostByMethodAndPath = {
   "bon.deno.dev": {
     GET: {
@@ -35,17 +48,6 @@ const handlers: HandlersByHostByMethodAndPath = {
         const deployedAt = new Date();
         let visits = 0;
 
-        // weekend logic
-        const weekendDate = new Date(2023, 6, 26);
-        const names = ["выходной", "день", "ночь", "отсыпной"];
-        const dayName = () =>
-          names[
-            Math.floor(
-              ((new Date()).getTime() - weekendDate.getTime()) / 1000 / 60 /
-                60 / 24,
-            ) % 4
-          ];
-
         return (s) =>
           s.isJsonRequest()
             ? s.jsonResponse({ deployedAt, visits })
@@ -68,7 +70,7 @@ const handlers: HandlersByHostByMethodAndPath = {
           Visits since deploy: ${visits++}
         </pre></code>
         
-        <p>${dayName()}</p>
+        <p>${momDayName()}</p>
       </body>
       </html>
       `);
@@ -84,6 +86,17 @@ const handlers: HandlersByHostByMethodAndPath = {
     POST: {
       "/upper": async (s) =>
         s.textResponse((await s.getRequestTextBody()).toUpperCase()),
+
+      "/marussia/master": async (s) => s.jsonResponse({
+        response: {
+          text: `У мамы сейчас ${momDayName}.`,
+          tts: `У мамы сейчас ${momDayName}.`,
+          buttons: [],
+          end_session: true
+        },
+        session: (await s.getRequestJSONBody()).session,
+        version: "1.0"
+      }),
     },
   },
 };
@@ -113,6 +126,10 @@ class Server {
 
   async getRequestTextBody(): Promise<string> {
     return await this.req.text();
+  }
+
+  async getRequestJSONBody(): Promise<object> {
+    return await this.req.json();
   }
 
   async htmlResponse(body: string) {
