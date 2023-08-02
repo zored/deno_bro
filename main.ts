@@ -89,8 +89,8 @@ const handlers: HandlersByHostByMethodAndPath = {
 
       "/marussia/master": async (s) => s.jsonResponse({
         response: {
-          text: `У мамы сейчас ${momDayName}.`,
-          tts: `У мамы сейчас ${momDayName}.`,
+          text: `У мамы сейчас ${momDayName()}.`,
+          tts: `У мамы сейчас ${momDayName()}.`,
           buttons: [],
           end_session: true
         },
